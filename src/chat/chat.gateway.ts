@@ -28,9 +28,11 @@ export class ChatGateway implements OnGatewayConnection {
       });
 
       client.data.userId = jwtPayload.sub.toString();
+      client.emit('connected');
     } catch (error) {
       client.disconnect();
       console.error(`Client ${client.id} not authorized`);
+      client.emit('notAuthorized');
     }
   }
 
