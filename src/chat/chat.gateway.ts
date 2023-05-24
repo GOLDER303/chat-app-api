@@ -8,6 +8,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { GetSocketUserId } from 'src/common/decorators/get-socket-user-id.decorator';
+import { NewMessageDTO } from './dtos/new-message.dto';
 
 @WebSocketGateway({
   cors: {
