@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import {
   ConnectedSocket,
@@ -6,8 +7,10 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
+import { Chat } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
 import { GetSocketUserId } from 'src/common/decorators/get-socket-user-id.decorator';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { NewMessageDTO } from './dtos/new-message.dto';
 
 @WebSocketGateway({
@@ -16,7 +19,10 @@ import { NewMessageDTO } from './dtos/new-message.dto';
   },
 })
 export class ChatGateway implements OnGatewayConnection {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly prisma: PrismaService,
+  ) {}
 
   @WebSocketServer()
   wss: Server;
@@ -47,11 +53,28 @@ export class ChatGateway implements OnGatewayConnection {
   }
 
   @SubscribeMessage('createNewMessage')
-  handleNewMessage(client: Socket, { recipientId, message }: NewMessageDTO) {
+  async handleNewMessage(client: Socket, { chatId, message }: NewMessageDTO) {
     const senderId = client.data['userId'];
-    this.wss
-      .to(recipientId)
-      .to(senderId)
-      .emit('newMessage', { senderId, message });
+
+    let chat: Chat & { users: { id: number }[] };
+
+    try {
+      chat = await this.prisma.chat.findUnique({
+        where: { id: chatId },
+        include: {
+          users: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      throw new BadRequestException(`Chat with id: ${chatId} does not exist`);
+    }
+
+    chat.users.forEach((user) => {
+      this.wss.to(user.id.toString()).emit('newMessage', { senderId, message });
+    });
   }
 }

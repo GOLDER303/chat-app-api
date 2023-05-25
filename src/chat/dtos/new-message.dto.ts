@@ -1,9 +1,9 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 
 export class NewMessageDTO {
   @IsNotEmpty()
-  @IsString()
-  recipientId: string;
+  @IsInt()
+  chatId: number;
 
   @IsNotEmpty()
   @IsString()
