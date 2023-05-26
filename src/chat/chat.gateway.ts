@@ -1,7 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import {
-  ConnectedSocket,
   OnGatewayConnection,
   SubscribeMessage,
   WebSocketGateway,
@@ -9,7 +8,6 @@ import {
 } from '@nestjs/websockets';
 import { Chat } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
-import { GetSocketUserId } from 'src/common/decorators/get-socket-user-id.decorator';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { NewMessageDTO } from './dtos/new-message.dto';
 
@@ -34,22 +32,19 @@ export class ChatGateway implements OnGatewayConnection {
         secret: process.env.ACCESS_TOKEN_SECRET,
       });
 
-      client.data.userId = jwtPayload.sub.toString();
+      const userId = jwtPayload.sub.toString();
+
+      client.data.userId = userId;
+
+      client.join(userId);
+      console.log(`User ${userId} setup`);
+
       client.emit('connected');
     } catch (error) {
       client.disconnect();
       console.error(`Client ${client.id} not authorized`);
       client.emit('notAuthorized');
     }
-  }
-
-  @SubscribeMessage('setup')
-  handleSetup(
-    @ConnectedSocket() client: Socket,
-    @GetSocketUserId() userId: number,
-  ) {
-    console.log(`User ${userId} setup`);
-    client.join(userId.toString());
   }
 
   @SubscribeMessage('createNewMessage')
