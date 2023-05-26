@@ -54,7 +54,7 @@ export class ChatGateway implements OnGatewayConnection {
     let chat: Chat & { users: { id: number }[] };
 
     try {
-      chat = await this.prisma.chat.findUnique({
+      chat = await this.prisma.chat.findUniqueOrThrow({
         where: { id: chatId },
         include: {
           users: {
