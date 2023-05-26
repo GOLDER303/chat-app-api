@@ -1,4 +1,10 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { GetUserId } from 'src/common/decorators/get-user-id.decorator';
 import { AccessTokenGuard } from 'src/common/guards/access-token.guard';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -17,15 +23,19 @@ export class ChatController {
   ): Promise<CreateChatResponseDTO> {
     const chatUsers = createChatRequestDTO.users.concat(parseInt(userId));
 
-    const createdChat = await this.prisma.chat.create({
-      data: {
-        chatName: createChatRequestDTO.chatName,
-        users: {
-          connect: chatUsers.map((userId) => ({ id: userId })),
+    try {
+      const createdChat = await this.prisma.chat.create({
+        data: {
+          chatName: createChatRequestDTO.chatName,
+          users: {
+            connect: chatUsers.map((userId) => ({ id: userId })),
+          },
         },
-      },
-    });
+      });
 
-    return { chatId: createdChat.id };
+      return { chatId: createdChat.id };
+    } catch (error) {
+      throw new BadRequestException('You entered the wrong users ids');
+    }
   }
 }
