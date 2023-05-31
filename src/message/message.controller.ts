@@ -1,5 +1,6 @@
 import { Body, Controller, Get, UseGuards } from '@nestjs/common';
 import { AccessTokenGuard } from 'src/common/guards/access-token.guard';
+import { ChatOwnerGuard } from 'src/common/guards/chat-owner.guard';
 import { GetMessagesRequestDTO } from './dtos/get-messages-request.dto';
 import { MessageResponseDTO } from './dtos/message-response.dto';
 import { MessageService } from './message.service';
@@ -8,7 +9,7 @@ import { MessageService } from './message.service';
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
-  @UseGuards(AccessTokenGuard)
+  @UseGuards(AccessTokenGuard, ChatOwnerGuard)
   @Get('/')
   async getChatMesseges(
     @Body() getMessagesRequestDTO: GetMessagesRequestDTO,
