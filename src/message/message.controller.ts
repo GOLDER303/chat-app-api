@@ -1,0 +1,20 @@
+import { Body, Controller, Get, UseGuards } from '@nestjs/common';
+import { AccessTokenGuard } from 'src/common/guards/access-token.guard';
+import { GetMessagesRequestDTO } from './dtos/get-messages-request.dto';
+import { MessageResponseDTO } from './dtos/message-response.dto';
+import { MessageService } from './message.service';
+
+@Controller('messages')
+export class MessageController {
+  constructor(private readonly messageService: MessageService) {}
+
+  @UseGuards(AccessTokenGuard)
+  @Get('/')
+  async getChatMesseges(
+    @Body() getMessagesRequestDTO: GetMessagesRequestDTO,
+  ): Promise<MessageResponseDTO[]> {
+    return await this.messageService.getChatMessages(
+      getMessagesRequestDTO.chatId,
+    );
+  }
+}
