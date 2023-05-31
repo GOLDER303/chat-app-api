@@ -49,7 +49,7 @@ export class ChatGateway implements OnGatewayConnection {
 
   @SubscribeMessage('createNewMessage')
   async handleNewMessage(client: Socket, { chatId, message }: NewMessageDTO) {
-    const senderId = client.data['userId'];
+    const senderId: string = client.data['userId'];
 
     let chat: Chat & { users: { id: number }[] };
 
@@ -67,6 +67,14 @@ export class ChatGateway implements OnGatewayConnection {
     } catch (error) {
       throw new BadRequestException(`Chat with id: ${chatId} does not exist`);
     }
+
+    await this.prisma.message.create({
+      data: {
+        chatId: chat.id,
+        content: message,
+        senderId: parseInt(senderId),
+      },
+    });
 
     chat.users.forEach((user) => {
       this.wss.to(user.id.toString()).emit('newMessage', { senderId, message });
