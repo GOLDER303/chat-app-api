@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { GetUserId } from 'src/common/decorators/get-user-id.decorator';
 import { AccessTokenGuard } from 'src/common/guards/access-token.guard';
 import { ChatService } from './chat.service';
@@ -16,5 +16,11 @@ export class ChatController {
     @Body() createChatRequestDTO: CreateChatRequestDTO,
   ): Promise<CreateChatResponseDTO> {
     return await this.chatService.createChat(userId, createChatRequestDTO);
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Get('/')
+  async getUserChats(@GetUserId() userId: string) {
+    return await this.chatService.getUserChats(userId);
   }
 }

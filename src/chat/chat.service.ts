@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChatRequestDTO } from './dtos/create-chat-request.dto';
 import { CreateChatResponseDTO } from './dtos/create-chat-response.dto';
+import { UserChatDTO } from './dtos/user-chats.dto';
 
 @Injectable()
 export class ChatService {
@@ -27,5 +28,48 @@ export class ChatService {
     } catch (error) {
       throw new BadRequestException('You entered the wrong users ids');
     }
+  }
+
+  async getUserChats(userId: string): Promise<UserChatDTO[]> {
+    const chats = await this.prisma.chat.findMany({
+      where: {
+        users: {
+          some: {
+            id: parseInt(userId),
+          },
+        },
+      },
+      select: {
+        id: true,
+        chatName: true,
+        messages: {
+          select: {
+            senderId: true,
+            content: true,
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+          take: 1,
+        },
+        users: {
+          select: {
+            username: true,
+          },
+        },
+      },
+    });
+
+    const transformedChats = chats.map((chat) => {
+      const lastMessage = chat.messages[0];
+      return {
+        id: chat.id,
+        chatName: chat.chatName,
+        lastMessage,
+        users: chat.users,
+      };
+    });
+
+    return transformedChats;
   }
 }
