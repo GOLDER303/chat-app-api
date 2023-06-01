@@ -7,5 +7,5 @@ export class NewMessageDTO {
 
   @IsNotEmpty()
   @IsString()
-  message: string;
+  content: string;
 }
