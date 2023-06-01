@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { Chat } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChatRequestDTO } from './dtos/create-chat-request.dto';
 import { CreateChatResponseDTO } from './dtos/create-chat-response.dto';
@@ -71,5 +72,22 @@ export class ChatService {
     });
 
     return transformedChats;
+  }
+
+  async getChat(chatId: number): Promise<Chat & { users: { id: number }[] }> {
+    try {
+      return await this.prisma.chat.findUniqueOrThrow({
+        where: { id: chatId },
+        include: {
+          users: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      throw new BadRequestException(`Chat with id: ${chatId} does not exist`);
+    }
   }
 }

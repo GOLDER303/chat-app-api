@@ -24,4 +24,14 @@ export class MessageService {
 
     return messages;
   }
+
+  async createNewMessage(chatId: number, senderId: number, message: string) {
+    return await this.prisma.message.create({
+      data: {
+        chatId: chatId,
+        content: message,
+        senderId: senderId,
+      },
+    });
+  }
 }
