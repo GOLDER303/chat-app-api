@@ -25,6 +25,8 @@ model Chat {
   chatName  String
   users     User[]
   messages  Message[]
+
+  @@map("chats")
 }
 
 model Message {
