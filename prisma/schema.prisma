@@ -37,4 +37,6 @@ model Message {
   senderId  Int
   chat      Chat     @relation(fields: [chatId], references: [id])
   chatId    Int
+
+  @@map("messages")
 }
