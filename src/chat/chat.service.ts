@@ -55,6 +55,7 @@ export class ChatService {
         },
         users: {
           select: {
+            id: true,
             username: true,
           },
         },

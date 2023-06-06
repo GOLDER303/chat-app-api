@@ -6,6 +6,7 @@ export interface UserChatDTO {
     content: string;
   };
   users: {
+    id: number;
     username: string;
   }[];
 }
