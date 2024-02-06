@@ -2,7 +2,9 @@ export interface UserChatDTO {
   id: number;
   chatName: string;
   lastMessage: {
-    senderId: number;
+    sender: {
+      username: string;
+    };
     content: string;
   };
   users: {

@@ -45,7 +45,11 @@ export class ChatService {
         chatName: true,
         messages: {
           select: {
-            senderId: true,
+            sender: {
+              select: {
+                username: true,
+              },
+            },
             content: true,
           },
           orderBy: {

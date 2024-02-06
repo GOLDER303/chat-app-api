@@ -20,7 +20,7 @@ export class ChatController {
 
   @UseGuards(AccessTokenGuard)
   @Get('/')
-  async getUserChats(@GetUserId() userId: string) {
+  async getUserChats(@GetUserId() userId: string): Promise<UserChatDTO[]> {
     return await this.chatService.getUserChats(userId);
   }
 }
