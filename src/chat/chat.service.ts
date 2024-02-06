@@ -3,7 +3,7 @@ import { Chat } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChatRequestDTO } from './dtos/create-chat-request.dto';
 import { CreateChatResponseDTO } from './dtos/create-chat-response.dto';
-import { UserChatDTO } from './dtos/user-chats.dto';
+import { UserChatDTO } from './dtos/user-chat.dto';
 
 @Injectable()
 export class ChatService {

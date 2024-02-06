@@ -4,6 +4,7 @@ import { AccessTokenGuard } from 'src/common/guards/access-token.guard';
 import { ChatService } from './chat.service';
 import { CreateChatRequestDTO } from './dtos/create-chat-request.dto';
 import { CreateChatResponseDTO } from './dtos/create-chat-response.dto';
+import { UserChatDTO } from './dtos/user-chat.dto';
 
 @Controller('chat')
 export class ChatController {
