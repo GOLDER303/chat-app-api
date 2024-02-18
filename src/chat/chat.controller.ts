@@ -6,7 +6,7 @@ import { CreateChatRequestDTO } from './dtos/create-chat-request.dto';
 import { CreateChatResponseDTO } from './dtos/create-chat-response.dto';
 import { UserChatDTO } from './dtos/user-chat.dto';
 
-@Controller('chat')
+@Controller('chats')
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
