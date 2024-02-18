@@ -95,4 +95,12 @@ export class ChatService {
       throw new BadRequestException(`Chat with id: ${chatId} does not exist`);
     }
   }
+
+  async deleteChat(chatId: number) {
+    try {
+      await this.prisma.chat.delete({ where: { id: chatId } });
+    } catch (error) {
+      throw new BadRequestException(`Chat with id: ${chatId} does not exist`);
+    }
+  }
 }
