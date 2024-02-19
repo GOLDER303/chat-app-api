@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import { ChatOwnerGuard } from 'src/common/guards/chat-owner.guard';
 import { ChatService } from './chat.service';
 import { CreateChatRequestDTO } from './dtos/create-chat-request.dto';
 import { CreateChatResponseDTO } from './dtos/create-chat-response.dto';
+import { PatchChatRequestDTO } from './dtos/patch-chat-request.dto';
 import { UserChatDTO } from './dtos/user-chat.dto';
 
 @Controller('chats')
@@ -40,5 +42,14 @@ export class ChatController {
   @HttpCode(204)
   async deleteChat(@Param('chatId') chatId: string) {
     return await this.chatService.deleteChat(parseInt(chatId));
+  }
+
+  @UseGuards(AccessTokenGuard, ChatOwnerGuard)
+  @Patch(':chatId')
+  async patchChat(
+    @Param('chatId') chatId: string,
+    @Body() patchChatRequest: PatchChatRequestDTO,
+  ) {
+    return await this.chatService.patchChat(+chatId, patchChatRequest);
   }
 }

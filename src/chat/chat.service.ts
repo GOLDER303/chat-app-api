@@ -3,6 +3,7 @@ import { Chat } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChatRequestDTO } from './dtos/create-chat-request.dto';
 import { CreateChatResponseDTO } from './dtos/create-chat-response.dto';
+import { PatchChatRequestDTO } from './dtos/patch-chat-request.dto';
 import { UserChatDTO } from './dtos/user-chat.dto';
 
 @Injectable()
@@ -99,6 +100,23 @@ export class ChatService {
   async deleteChat(chatId: number) {
     try {
       await this.prisma.chat.delete({ where: { id: chatId } });
+    } catch (error) {
+      throw new BadRequestException(`Chat with id: ${chatId} does not exist`);
+    }
+  }
+
+  async patchChat(chatId: number, patchChatRequest: PatchChatRequestDTO) {
+    try {
+      return await this.prisma.chat.update({
+        where: { id: chatId },
+        data: {
+          chatName: patchChatRequest.chatName,
+        },
+        select: {
+          id: true,
+          chatName: true,
+        },
+      });
     } catch (error) {
       throw new BadRequestException(`Chat with id: ${chatId} does not exist`);
     }
