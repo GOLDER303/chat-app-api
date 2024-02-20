@@ -28,6 +28,7 @@ export class ChatService {
 
       return { chatId: createdChat.id };
     } catch (error) {
+      console.error(error);
       throw new BadRequestException('You entered the wrong users ids');
     }
   }
@@ -93,6 +94,7 @@ export class ChatService {
         },
       });
     } catch (error) {
+      console.error(error);
       throw new BadRequestException(`Chat with id: ${chatId} does not exist`);
     }
   }
@@ -101,6 +103,7 @@ export class ChatService {
     try {
       await this.prisma.chat.delete({ where: { id: chatId } });
     } catch (error) {
+      console.error(error);
       throw new BadRequestException(`Chat with id: ${chatId} does not exist`);
     }
   }
@@ -133,6 +136,7 @@ export class ChatService {
         },
       });
     } catch (error) {
+      console.error(error);
       throw new BadRequestException(`Chat with id: ${chatId} does not exist`);
     }
   }
