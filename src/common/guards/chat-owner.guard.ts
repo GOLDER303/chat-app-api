@@ -13,7 +13,7 @@ export class ChatOwnerGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
-    const chatId = parseInt(request.body.chatId);
+    const chatId = +request.params['chatId'];
     const userId = request.user['userId'];
 
     const user = await this.prisma.user.findUnique({
