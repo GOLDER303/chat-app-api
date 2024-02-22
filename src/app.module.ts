@@ -5,6 +5,7 @@ import { ChatModule } from './chat/chat.module';
 import { MessageModule } from './message/message.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserController } from './user/user.controller';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { UserController } from './user/user.controller';
     ConfigModule.forRoot({ isGlobal: true }),
     ChatModule,
     MessageModule,
+    UserModule,
   ],
-  controllers: [UserController],
 })
 export class AppModule {}
