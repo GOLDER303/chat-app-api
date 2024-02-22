@@ -7,11 +7,15 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { GetUserId } from 'src/common/decorators/get-user-id.decorator';
 import { AccessTokenGuard } from 'src/common/guards/access-token.guard';
 import { ChatOwnerGuard } from 'src/common/guards/chat-owner.guard';
+import { multerOptions } from 'src/config/multer-options';
 import { ChatService } from './chat.service';
 import { CreateChatRequestDTO } from './dtos/create-chat-request.dto';
 import { CreateChatResponseDTO } from './dtos/create-chat-response.dto';
@@ -51,5 +55,12 @@ export class ChatController {
     @Body() patchChatRequest: PatchChatRequestDTO,
   ) {
     return await this.chatService.patchChat(+chatId, patchChatRequest);
+  }
+
+  @UseGuards(AccessTokenGuard, ChatOwnerGuard)
+  @Post(':chatId/image')
+  @UseInterceptors(FileInterceptor('image', multerOptions))
+  async addChatImage(@UploadedFile() image: Express.Multer.File) {
+    console.log(image);
   }
 }
