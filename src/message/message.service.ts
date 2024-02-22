@@ -28,12 +28,28 @@ export class MessageService {
     return messages;
   }
 
-  async createNewMessage(chatId: number, senderId: number, message: string) {
+  async createNewMessage(
+    chatId: number,
+    senderId: number,
+    message: string,
+  ): Promise<MessageResponseDTO> {
     return await this.prisma.message.create({
       data: {
         chatId: chatId,
         content: message,
         senderId: senderId,
+      },
+      select: {
+        id: true,
+        chatId: true,
+        createdAt: true,
+        sender: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        content: true,
       },
     });
   }
