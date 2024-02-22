@@ -35,7 +35,7 @@ model Message {
   content   String
   sender    User     @relation(fields: [senderId], references: [id])
   senderId  Int
-  chat      Chat     @relation(fields: [chatId], references: [id])
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId    Int
 
   @@map("Messages")
