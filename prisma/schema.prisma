@@ -16,7 +16,7 @@ model User {
   messages           Message[]
   chats              Chat[]
 
-  @@map("users")
+  @@map("Users")
 }
 
 model Chat {
@@ -26,7 +26,7 @@ model Chat {
   users     User[]
   messages  Message[]
 
-  @@map("chats")
+  @@map("Chats")
 }
 
 model Message {
@@ -38,5 +38,5 @@ model Message {
   chat      Chat     @relation(fields: [chatId], references: [id])
   chatId    Int
 
-  @@map("messages")
+  @@map("Messages")
 }

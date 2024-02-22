@@ -1,8 +1,8 @@
 /*
   Warnings:
 
-  - Added the required column `username` to the `users` table without a default value. This is not possible if the table is not empty.
+  - Added the required column `username` to the `Users` table without a default value. This is not possible if the table is not empty.
 
 */
 -- AlterTable
-ALTER TABLE `users` ADD COLUMN `username` VARCHAR(191) NOT NULL;
+ALTER TABLE `Users` ADD COLUMN `username` VARCHAR(191) NOT NULL;

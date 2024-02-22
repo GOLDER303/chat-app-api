@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE `users` ADD COLUMN `hashedRefreshToken` VARCHAR(191) NULL;
+ALTER TABLE `Users` ADD COLUMN `hashedRefreshToken` VARCHAR(191) NULL;
