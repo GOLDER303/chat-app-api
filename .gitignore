@@ -31,3 +31,6 @@ lerna-debug.log*
 .vscode/*
 
 .env
+
+# Chat images
+uploads/
