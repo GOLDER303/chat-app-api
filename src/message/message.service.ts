@@ -12,9 +12,12 @@ export class MessageService {
         chatId,
       },
       select: {
+        id: true,
+        chatId: true,
         createdAt: true,
         sender: {
           select: {
+            id: true,
             username: true,
           },
         },
