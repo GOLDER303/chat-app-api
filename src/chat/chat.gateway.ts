@@ -6,6 +6,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { MessageResponseDTO } from 'src/message/dtos/message-response.dto';
 import { MessageService } from 'src/message/message.service';
 import { ChatService } from './chat.service';
 import { NewMessageDTO } from './dtos/new-message.dto';
@@ -53,17 +54,11 @@ export class ChatGateway implements OnGatewayConnection {
 
     const chat = await this.chatService.getChat(chatId);
 
-    const newMessage = await this.messageService.createNewMessage(
-      chat.id,
-      parseInt(senderId),
-      content,
-    );
+    const newMessage: MessageResponseDTO =
+      await this.messageService.createNewMessage(chat.id, +senderId, content);
 
     chat.users.forEach((user) => {
-      this.wss.to(user.id.toString()).emit('newMessage', {
-        senderId: newMessage.senderId,
-        message: newMessage.content,
-      });
+      this.wss.to(user.id.toString()).emit('newMessage', newMessage);
     });
   }
 }
