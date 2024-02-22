@@ -12,7 +12,7 @@ import { NewMessageDTO } from './dtos/new-message.dto';
 
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5173', 'http://localhost:3000'],
   },
 })
 export class ChatGateway implements OnGatewayConnection {
