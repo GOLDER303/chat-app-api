@@ -1,6 +1,7 @@
 export interface UserChatDTO {
   id: number;
   chatName: string;
+  hasChatImage: boolean;
   lastMessage: {
     sender: {
       username: string;

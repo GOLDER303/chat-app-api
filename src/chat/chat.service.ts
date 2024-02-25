@@ -49,6 +49,7 @@ export class ChatService {
       select: {
         id: true,
         chatName: true,
+        chatImageFileName: true,
         messages: {
           select: {
             sender: {
@@ -74,12 +75,16 @@ export class ChatService {
 
     const transformedChats = chats.map((chat) => {
       const lastMessage = chat.messages[0];
-      return {
+
+      const transformedChat: UserChatDTO = {
         id: chat.id,
         chatName: chat.chatName,
+        hasChatImage: chat.chatImageFileName ? true : false,
         lastMessage,
         users: chat.users,
       };
+
+      return transformedChat;
     });
 
     return transformedChats;
