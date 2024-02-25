@@ -1,5 +1,10 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RefreshTokensRequestDTO } from './dtos/refresh-tokens-request.dto';
@@ -14,15 +19,27 @@ export class AuthService {
   async singUp(signUpDTO: SignUpRequestDTO): Promise<TokensResponseDTO> {
     const hashedPassword = await this.hashData(signUpDTO.password);
 
-    const newUser = await this.prisma.user.create({
-      data: {
-        username: signUpDTO.username,
-        email: signUpDTO.email,
-        password: hashedPassword,
-      },
-    });
-    const tokens = await this.generateTokens(newUser.id, newUser.email);
-    return tokens;
+    try {
+      const newUser = await this.prisma.user.create({
+        data: {
+          username: signUpDTO.username,
+          email: signUpDTO.email,
+          password: hashedPassword,
+        },
+      });
+
+      const tokens = await this.generateTokens(newUser.id, newUser.email);
+
+      return tokens;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new ConflictException('Account with this email already exists');
+        }
+      }
+
+      throw error;
+    }
   }
 
   async singIn(signInRequestDTO: SignInRequestDTO): Promise<TokensResponseDTO> {
