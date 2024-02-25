@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -75,6 +76,10 @@ export class ChatController {
     @Param('chatId') chatId: string,
     @UploadedFile() image: Express.Multer.File,
   ) {
+    if (!image) {
+      throw new BadRequestException('You have to provide an image');
+    }
+
     await this.chatService.addChatImage(+chatId, image);
   }
 }
