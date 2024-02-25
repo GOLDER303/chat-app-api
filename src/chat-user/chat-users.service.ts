@@ -57,4 +57,30 @@ export class ChatUsersService {
       throw new BadRequestException(`Chat with id: ${chatId} does not exist`);
     }
   }
+
+  async deleteUserFromChat(chatId: number, userId: number) {
+    try {
+      return await this.prisma.chat.update({
+        where: { id: chatId },
+        data: {
+          users: {
+            disconnect: [{ id: userId }],
+          },
+        },
+        select: {
+          id: true,
+          chatName: true,
+          users: {
+            select: {
+              id: true,
+              username: true,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException(`Chat with id: ${chatId} does not exist`);
+    }
+  }
 }
