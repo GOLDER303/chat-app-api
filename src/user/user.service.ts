@@ -11,4 +11,25 @@ export class UserService {
       select: { id: true, username: true },
     });
   }
+
+  async checkNonExistingUsers(userIds: number[]): Promise<number[]> {
+    const existingUsers = await this.prisma.user.findMany({
+      where: {
+        id: {
+          in: userIds,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const existingUserIds = new Set<number>();
+
+    existingUsers.forEach((user) => {
+      existingUserIds.add(user.id);
+    });
+
+    return userIds.filter((userId) => !existingUserIds.has(userId));
+  }
 }

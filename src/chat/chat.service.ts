@@ -120,20 +120,11 @@ export class ChatService {
   }
 
   async patchChat(chatId: number, patchChatRequest: PatchChatRequestDTO) {
-    const usersToAdd = patchChatRequest.usersToAddIds
-      ? patchChatRequest.usersToAddIds.map((userToAddId) => ({
-          id: userToAddId,
-        }))
-      : undefined;
-
     try {
       return await this.prisma.chat.update({
         where: { id: chatId },
         data: {
           chatName: patchChatRequest.chatName,
-          users: {
-            connect: usersToAdd,
-          },
         },
         select: {
           id: true,
