@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Chat } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChatRequestDTO } from './dtos/create-chat-request.dto';
@@ -138,6 +142,20 @@ export class ChatService {
     } catch (error) {
       console.error(error);
       throw new BadRequestException(`Chat with id: ${chatId} does not exist`);
+    }
+  }
+
+  async addChatImage(chatId: number, image: Express.Multer.File) {
+    try {
+      return await this.prisma.chat.update({
+        where: { id: chatId },
+        data: {
+          chatImageFileName: image.filename,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      throw new NotFoundException(`Chat with id: ${chatId} does not exist`);
     }
   }
 }

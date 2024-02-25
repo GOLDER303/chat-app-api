@@ -61,7 +61,10 @@ export class ChatController {
   @UseGuards(AccessTokenGuard, ChatOwnerGuard)
   @Post(':chatId/image')
   @UseInterceptors(FileInterceptor('image', multerOptions))
-  async addChatImage(@UploadedFile() image: Express.Multer.File) {
-    console.log(image);
+  async addChatImage(
+    @Param('chatId') chatId: string,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    await this.chatService.addChatImage(+chatId, image);
   }
 }
