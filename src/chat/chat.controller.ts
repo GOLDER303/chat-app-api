@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -43,7 +44,7 @@ export class ChatController {
 
   @UseGuards(AccessTokenGuard, ChatOwnerGuard)
   @Delete(':chatId')
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async deleteChat(@Param('chatId') chatId: string) {
     return await this.chatService.deleteChat(parseInt(chatId));
   }
