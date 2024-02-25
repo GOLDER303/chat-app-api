@@ -20,11 +20,12 @@ model User {
 }
 
 model Chat {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  chatName  String
-  users     User[]
-  messages  Message[]
+  id                Int       @id @default(autoincrement())
+  createdAt         DateTime  @default(now())
+  chatName          String
+  chatImageFileName String?
+  users             User[]
+  messages          Message[]
 
   @@map("Chats")
 }
