@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -56,6 +57,15 @@ export class ChatController {
     @Body() patchChatRequest: PatchChatRequestDTO,
   ) {
     return await this.chatService.patchChat(+chatId, patchChatRequest);
+  }
+
+  @UseGuards(AccessTokenGuard, ChatOwnerGuard)
+  @Get(':chatId/image')
+  async getChatImage(@Param('chatId') chatId: string) {
+    const chatImageReadableStream =
+      await this.chatService.getChatImageReadStream(+chatId);
+
+    return new StreamableFile(chatImageReadableStream);
   }
 
   @UseGuards(AccessTokenGuard, ChatOwnerGuard)

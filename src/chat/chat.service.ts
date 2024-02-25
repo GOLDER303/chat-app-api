@@ -4,6 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Chat } from '@prisma/client';
+import { ReadStream, createReadStream } from 'fs';
+import { join } from 'path';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChatRequestDTO } from './dtos/create-chat-request.dto';
 import { CreateChatResponseDTO } from './dtos/create-chat-response.dto';
@@ -162,5 +164,26 @@ export class ChatService {
       console.error(error);
       throw new NotFoundException(`Chat with id: ${chatId} does not exist`);
     }
+  }
+
+  async getChatImageReadStream(chatId: number): Promise<ReadStream> {
+    const chatInfo = await this.prisma.chat.findUnique({
+      where: { id: chatId },
+      select: { chatImageFileName: true },
+    });
+
+    if (!chatInfo.chatImageFileName) {
+      throw new NotFoundException(
+        `Chat with id ${chatId} does not have an image`,
+      );
+    }
+
+    const chatImageFileName = chatInfo.chatImageFileName;
+
+    const chatImagePath = join(process.cwd(), 'uploads', chatImageFileName);
+
+    const chatImage = createReadStream(chatImagePath);
+
+    return chatImage;
   }
 }
