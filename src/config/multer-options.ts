@@ -1,8 +1,8 @@
 import { BadRequestException } from '@nestjs/common';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import { existsSync, mkdirSync } from 'fs';
+import * as mime from 'mime-types';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
 import { v4 as uuid } from 'uuid';
 
 export const multerOptions: MulterOptions = {
@@ -30,7 +30,8 @@ export const multerOptions: MulterOptions = {
     },
 
     filename(req, file, callback) {
-      callback(null, `${uuid()}.${extname(file.originalname)}`);
+      const fileExtension = mime.extension(file.mimetype);
+      callback(null, `${uuid()}.${fileExtension}`);
     },
   }),
 };
