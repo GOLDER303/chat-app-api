@@ -13,7 +13,8 @@ model User {
   email              String    @unique
   password           String
   hashedRefreshToken String?
-  messages           Message[]
+  messages           Message[] @relation("UserMessages")
+  seenMessage        Message[] @relation("SeenMessages")
   chats              Chat[]
 
   @@map("Users")
@@ -31,13 +32,14 @@ model Chat {
 }
 
 model Message {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  content   String
-  sender    User     @relation(fields: [senderId], references: [id])
-  senderId  Int
-  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  chatId    Int
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  content     String
+  sender      User     @relation(name: "UserMessages", fields: [senderId], references: [id])
+  senderId    Int
+  chat        Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chatId      Int
+  seenByUsers User[]   @relation("SeenMessages")
 
   @@map("Messages")
 }
