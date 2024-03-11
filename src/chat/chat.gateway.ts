@@ -61,4 +61,17 @@ export class ChatGateway implements OnGatewayConnection {
       this.wss.to(user.id.toString()).emit('newMessage', newMessage);
     });
   }
+
+  @SubscribeMessage('seenMessage')
+  async handleSeenMessage(client: Socket, messageId: number) {
+    const seerId: string = client.data['userId'];
+
+    const message = await this.messageService.messageSeen(messageId, +seerId);
+
+    const chat = await this.chatService.getChat(message.chatId);
+
+    chat.users.forEach((user) => {
+      this.wss.to(user.id.toString()).emit('messageWasSeen', messageId);
+    });
+  }
 }

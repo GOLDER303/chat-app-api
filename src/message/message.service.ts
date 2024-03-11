@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Message } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { MessageResponseDTO } from './dtos/message-response.dto';
 
@@ -51,6 +52,13 @@ export class MessageService {
         },
         content: true,
       },
+    });
+  }
+
+  async messageSeen(messageId: number, seerId: number): Promise<Message> {
+    return await this.prisma.message.update({
+      where: { id: messageId },
+      data: { seenByUsers: { connect: { id: seerId } } },
     });
   }
 }
