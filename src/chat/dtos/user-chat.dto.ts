@@ -8,6 +8,7 @@ export interface UserChatDTO {
       username: string;
     };
     content: string;
+    seen: boolean;
   };
   users: {
     id: number;

@@ -61,6 +61,7 @@ export class ChatService {
               },
             },
             content: true,
+            seenByUsers: { select: { id: true } },
           },
           orderBy: {
             createdAt: 'desc',
@@ -83,7 +84,14 @@ export class ChatService {
         id: chat.id,
         chatName: chat.chatName,
         hasChatImage: chat.chatImageFileName ? true : false,
-        lastMessage,
+        lastMessage: lastMessage
+          ? {
+              id: lastMessage.id,
+              sender: lastMessage.sender,
+              content: lastMessage.content,
+              seen: lastMessage.seenByUsers.some((user) => user.id === +userId),
+            }
+          : undefined,
         users: chat.users,
       };
 
