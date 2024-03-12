@@ -54,6 +54,7 @@ export class ChatService {
         chatImageFileName: true,
         messages: {
           select: {
+            id: true,
             sender: {
               select: {
                 username: true,
