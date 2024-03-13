@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Chat } from '@prisma/client';
-import { ReadStream, createReadStream } from 'fs';
+import { ReadStream, createReadStream, existsSync, unlinkSync } from 'fs';
 import { join } from 'path';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChatRequestDTO } from './dtos/create-chat-request.dto';
@@ -154,6 +154,21 @@ export class ChatService {
 
   async addChatImage(chatId: number, image: Express.Multer.File) {
     try {
+      const chat = await this.prisma.chat.findUniqueOrThrow({
+        where: { id: chatId },
+      });
+
+      const prevChatImageFileName = chat.chatImageFileName;
+
+      if (prevChatImageFileName) {
+        const prevChatImageFilePath = join('uploads', prevChatImageFileName);
+
+        if (existsSync(prevChatImageFilePath)) {
+          console.log(`removing ${prevChatImageFilePath}`);
+          unlinkSync(prevChatImageFilePath);
+        }
+      }
+
       return await this.prisma.chat.update({
         where: { id: chatId },
         data: {
