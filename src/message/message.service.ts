@@ -23,6 +23,11 @@ export class MessageService {
           },
         },
         content: true,
+        seenByUsers: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
 
@@ -39,6 +44,7 @@ export class MessageService {
         chatId: chatId,
         content: message,
         senderId: senderId,
+        seenByUsers: { connect: { id: senderId } },
       },
       select: {
         id: true,
@@ -49,6 +55,9 @@ export class MessageService {
             id: true,
             username: true,
           },
+        },
+        seenByUsers: {
+          select: { id: true },
         },
         content: true,
       },

@@ -7,4 +7,5 @@ export interface MessageResponseDTO {
     username: string;
   };
   content: string;
+  seenByUsers: { id: number }[];
 }
