@@ -62,6 +62,7 @@ export class ChatService {
             },
             content: true,
             seenByUsers: { select: { id: true } },
+            createdAt: true,
           },
           orderBy: {
             createdAt: 'desc',
@@ -90,6 +91,7 @@ export class ChatService {
               sender: lastMessage.sender,
               content: lastMessage.content,
               seen: lastMessage.seenByUsers.some((user) => user.id === +userId),
+              createdAt: lastMessage.createdAt,
             }
           : undefined,
         users: chat.users,

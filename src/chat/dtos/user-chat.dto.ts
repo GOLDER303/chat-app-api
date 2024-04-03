@@ -9,6 +9,7 @@ export interface UserChatDTO {
     };
     content: string;
     seen: boolean;
+    createdAt: Date;
   };
   users: {
     id: number;
