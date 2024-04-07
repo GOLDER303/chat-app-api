@@ -166,7 +166,6 @@ export class ChatService {
         const prevChatImageFilePath = join('uploads', prevChatImageFileName);
 
         if (existsSync(prevChatImageFilePath)) {
-          console.log(`removing ${prevChatImageFilePath}`);
           unlinkSync(prevChatImageFilePath);
         }
       }
