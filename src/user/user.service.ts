@@ -9,9 +9,21 @@ export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getAllUsers(): Promise<UserDTO[]> {
-    return await this.prisma.user.findMany({
-      select: { id: true, username: true },
+    const users = await this.prisma.user.findMany({
+      select: { id: true, username: true, userImageFileName: true },
     });
+
+    const transformedUsers = users.map((user) => {
+      const transformedUser: UserDTO = {
+        id: user.id,
+        username: user.username,
+        hasProfileImage: user.userImageFileName ? true : false,
+      };
+
+      return transformedUser;
+    });
+
+    return transformedUsers;
   }
 
   async checkNonExistingUsers(userIds: number[]): Promise<number[]> {
