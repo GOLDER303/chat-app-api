@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { existsSync, unlinkSync } from 'fs';
+import { createReadStream, existsSync, unlinkSync } from 'fs';
 import { join } from 'path';
 import { PrismaService } from './../prisma/prisma.service';
 import { UserDTO } from './dto/user.dto';
@@ -73,5 +73,26 @@ export class UserService {
       console.error(error);
       throw new NotFoundException(`User with id: ${userId} does not exist`);
     }
+  }
+
+  async getUserProfileImageReadStream(userId: number) {
+    const userInfo = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { userImageFileName: true },
+    });
+
+    if (!userInfo.userImageFileName) {
+      throw new NotFoundException(
+        `User with id ${userId} does not have a profile image`,
+      );
+    }
+
+    const chatImageFileName = userInfo.userImageFileName;
+
+    const chatImagePath = join(process.cwd(), 'uploads', chatImageFileName);
+
+    const chatImage = createReadStream(chatImagePath);
+
+    return chatImage;
   }
 }
