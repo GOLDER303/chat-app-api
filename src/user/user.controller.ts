@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -36,5 +37,14 @@ export class UserController {
     }
 
     await this.userService.addUserImage(+userId, image);
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Get(':userId/image')
+  async getUserProfileImage(@Param('userId') userId: string) {
+    const chatImageReadableStream =
+      await this.userService.getUserProfileImageReadStream(+userId);
+
+    return new StreamableFile(chatImageReadableStream);
   }
 }
