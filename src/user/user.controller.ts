@@ -26,7 +26,7 @@ export class UserController {
   }
 
   @UseGuards(AccessTokenGuard)
-  @Post('/:userId/image')
+  @Post(':userId/image')
   @UseInterceptors(FileInterceptor('image', multerOptions))
   async uploadUserImage(
     @Param('userId') userId: string,
