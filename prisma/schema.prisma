@@ -16,7 +16,8 @@ model User {
   userProfilePictureFileName String?
   messages                   Message[] @relation("UserMessages")
   seenMessage                Message[] @relation("SeenMessages")
-  chats                      Chat[]
+  administeredChats          Chat[]    @relation("ChatsAdministrators")
+  chats                      Chat[]    @relation("ChatsUsers")
 
   @@map("Users")
 }
@@ -26,7 +27,8 @@ model Chat {
   createdAt         DateTime  @default(now())
   chatName          String
   chatImageFileName String?
-  users             User[]
+  administrators    User[]    @relation("ChatsAdministrators")
+  users             User[]    @relation("ChatsUsers")
   messages          Message[]
 
   @@map("Chats")
