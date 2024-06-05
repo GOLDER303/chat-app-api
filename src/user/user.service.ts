@@ -10,14 +10,14 @@ export class UserService {
 
   async getAllUsers(): Promise<UserDTO[]> {
     const users = await this.prisma.user.findMany({
-      select: { id: true, username: true, userImageFileName: true },
+      select: { id: true, username: true, userProfilePictureFileName: true },
     });
 
     const transformedUsers = users.map((user) => {
       const transformedUser: UserDTO = {
         id: user.id,
         username: user.username,
-        hasProfileImage: user.userImageFileName ? true : false,
+        hasProfilePicture: user.userProfilePictureFileName ? true : false,
       };
 
       return transformedUser;
@@ -53,7 +53,7 @@ export class UserService {
         where: { id: userId },
       });
 
-      const prevUserImageFileName = user.userImageFileName;
+      const prevUserImageFileName = user.userProfilePictureFileName;
 
       if (prevUserImageFileName) {
         const prevChatImageFilePath = join('uploads', prevUserImageFileName);
@@ -66,7 +66,7 @@ export class UserService {
       return await this.prisma.user.update({
         where: { id: userId },
         data: {
-          chatImageFileName: image.filename,
+          userProfilePictureFileName: image.filename,
         },
       });
     } catch (error) {
@@ -78,16 +78,16 @@ export class UserService {
   async getUserProfileImageReadStream(userId: number) {
     const userInfo = await this.prisma.user.findUnique({
       where: { id: userId },
-      select: { userImageFileName: true },
+      select: { userProfilePictureFileName: true },
     });
 
-    if (!userInfo.userImageFileName) {
+    if (!userInfo.userProfilePictureFileName) {
       throw new NotFoundException(
         `User with id ${userId} does not have a profile image`,
       );
     }
 
-    const chatImageFileName = userInfo.userImageFileName;
+    const chatImageFileName = userInfo.userProfilePictureFileName;
 
     const chatImagePath = join(process.cwd(), 'uploads', chatImageFileName);
 
