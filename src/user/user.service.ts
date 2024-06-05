@@ -63,7 +63,7 @@ export class UserService {
         }
       }
 
-      return await this.prisma.chat.update({
+      return await this.prisma.user.update({
         where: { id: userId },
         data: {
           chatImageFileName: image.filename,
